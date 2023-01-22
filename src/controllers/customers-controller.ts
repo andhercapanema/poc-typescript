@@ -6,26 +6,21 @@ import {
     checkIfAddressExists,
     getAddressId,
     getCEPData,
+    createAddressIfItDoesntExists,
 } from "../services/addresses-services.js";
-import { createNewUser } from "../services/customers-services.js";
+import {
+    createNewUser,
+    getAllCustomersFromDb,
+    updateCustomer,
+} from "../services/customers-services.js";
 
 async function postNewCustomer(req: Request, res: Response) {
     const { name, cpf, phone, birthDate, address } = req.body as Customer;
 
     try {
-        const CEPData = await getCEPData(address.zipCode);
+        const addressId = await createAddressIfItDoesntExists(address);
 
-        if (CEPData.logradouro !== "") address.street = CEPData.logradouro;
-        if (CEPData.bairro !== "") address.district = CEPData.bairro;
-
-        let addressInDb = await checkIfAddressExists(CEPData, address);
-
-        if (!addressInDb.id) {
-            await createNewAddress(addressInDb, CEPData, address);
-            addressInDb = await getAddressId(CEPData, address);
-        }
-
-        await createNewUser({ name, cpf, phone, birthDate }, addressInDb.id);
+        await createNewUser({ name, cpf, phone, birthDate }, addressId);
         res.sendStatus(201);
     } catch (err) {
         console.error(err);
@@ -35,7 +30,7 @@ async function postNewCustomer(req: Request, res: Response) {
 
 async function getAllCustomers(req: Request, res: Response) {
     try {
-        const customers = await CustomersRepository.selectAllCustomers();
+        const customers = await getAllCustomersFromDb();
         res.send(customers);
     } catch (err) {
         console.error(err);
@@ -43,4 +38,23 @@ async function getAllCustomers(req: Request, res: Response) {
     }
 }
 
-export { getAllCustomers, postNewCustomer };
+async function patchCustomerById(req: Request, res: Response) {
+    const { name, cpf, phone, birthDate, address } = req.body as Customer;
+    const customerId = req.params.id;
+
+    try {
+        const addressId = await createAddressIfItDoesntExists(address);
+
+        await updateCustomer(
+            { customerId, name, cpf, phone, birthDate },
+            addressId
+        );
+
+        res.sendStatus(200);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
+}
+
+export { postNewCustomer, getAllCustomers, patchCustomerById };

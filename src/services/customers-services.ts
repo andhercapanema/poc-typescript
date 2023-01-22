@@ -21,3 +21,17 @@ export async function getAllCustomersFromDb() {
         throw err;
     }
 }
+
+export async function updateCustomer(
+    { customerId, name, cpf, phone, birthDate },
+    addressId: number
+) {
+    try {
+        await CustomersRepository.updateCustomerById(
+            { customerId, name, cpf, phone, birthDate },
+            addressId
+        );
+    } catch (err) {
+        throw err;
+    }
+}

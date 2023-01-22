@@ -102,6 +102,22 @@ export async function getAddressId(CEPData, address) {
     }
 }
 
+export async function createAddressIfItDoesntExists(address) {
+    const CEPData = await getCEPData(address.zipCode);
+
+    if (CEPData.logradouro !== "") address.street = CEPData.logradouro;
+    if (CEPData.bairro !== "") address.district = CEPData.bairro;
+
+    let addressInDb = await checkIfAddressExists(CEPData, address);
+
+    if (!addressInDb.id) {
+        await createNewAddress(addressInDb, CEPData, address);
+        addressInDb = await getAddressId(CEPData, address);
+    }
+
+    return addressInDb.id;
+}
+
 type CEPData = {
     cep: string;
     logradouro: string;

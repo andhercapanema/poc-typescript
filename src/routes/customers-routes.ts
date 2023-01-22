@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+    deleteCustomerById,
     getAllCustomers,
     patchCustomerById,
     postNewCustomer,
@@ -9,6 +10,7 @@ import { customerSchema } from "../schemas/customer-schema.js";
 
 const router = Router();
 router.get("", getAllCustomers);
+router.delete("/:id", deleteCustomerById);
 
 router.use(validateBody(customerSchema));
 router.post("", postNewCustomer);

@@ -18,6 +18,15 @@ const CustomersRepository = {
         );
         return customers.rows;
     },
+    selectCustomersById: async (customerId: number) => {
+        const customers = await connection.query(
+            `SELECT *
+            FROM customers
+            WHERE id = $1;`,
+            [customerId]
+        );
+        return customers.rows[0];
+    },
     updateCustomerById: async (
         { customerId, name, cpf, phone, birthDate },
         addressId: number
@@ -27,6 +36,13 @@ const CustomersRepository = {
             SET name = $1, cpf = $2, phone = $3, birth_date = $4, address_id = $5
             WHERE id = $6;`,
             [name, cpf, phone, birthDate, addressId, customerId]
+        );
+    },
+    deleteCustomerById: async (customerId: number) => {
+        await connection.query(
+            `DELETE FROM customers
+            WHERE id = $1;`,
+            [customerId]
         );
     },
 };

@@ -1,3 +1,5 @@
+import { ApplicationError } from "../Protocols/ApplicationError";
+
 export default function invalidDataError(
     details: string[]
 ): ApplicationInvalidateDataError {
@@ -7,11 +9,6 @@ export default function invalidDataError(
         details,
     };
 }
-
-type ApplicationError = {
-    name: string;
-    message: string;
-};
 
 type ApplicationInvalidateDataError = ApplicationError & {
     details: string[];

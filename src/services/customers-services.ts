@@ -1,3 +1,4 @@
+import { notFoundError } from "../errors/not-found-error.js";
 import CustomersRepository from "../repositories/customers-repository.js";
 
 export async function createNewUser(
@@ -14,13 +15,8 @@ export async function createNewUser(
     }
 }
 
-export async function getAllCustomersFromDb() {
-    try {
-        return await CustomersRepository.selectAllCustomers();
-    } catch (err) {
-        throw err;
-    }
-}
+export const getAllCustomersFromDb = async () =>
+    await CustomersRepository.selectAllCustomers();
 
 export async function updateCustomer(
     { customerId, name, cpf, phone, birthDate },
@@ -34,4 +30,14 @@ export async function updateCustomer(
     } catch (err) {
         throw err;
     }
+}
+
+export const getCustomerById = async (customerId: number) =>
+    await CustomersRepository.selectCustomersById(customerId);
+
+export async function deleteCustomerFromDb(customerId: number) {
+    const customer = await getCustomerById(customerId);
+    if (!customer) throw notFoundError("Customer");
+
+    await CustomersRepository.deleteCustomerById(customerId);
 }

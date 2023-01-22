@@ -10,6 +10,7 @@ import {
 } from "../services/addresses-services.js";
 import {
     createNewUser,
+    deleteCustomerFromDb,
     getAllCustomersFromDb,
     updateCustomer,
 } from "../services/customers-services.js";
@@ -57,4 +58,26 @@ async function patchCustomerById(req: Request, res: Response) {
     }
 }
 
-export { postNewCustomer, getAllCustomers, patchCustomerById };
+async function deleteCustomerById(req: Request, res: Response) {
+    const customerId = req.params.id;
+
+    try {
+        await deleteCustomerFromDb(Number(customerId));
+
+        res.sendStatus(200);
+    } catch (err) {
+        if (err.name === "NotFoundError") {
+            return res.status(404).send({ message: err.message });
+        }
+
+        console.error(err);
+        res.status(500).send(err.message);
+    }
+}
+
+export {
+    postNewCustomer,
+    getAllCustomers,
+    patchCustomerById,
+    deleteCustomerById,
+};

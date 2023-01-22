@@ -1,17 +1,11 @@
 import { Request, Response } from "express";
 import { Customer } from "../Protocols/Customer.js";
-import CustomersRepository from "../repositories/customers-repository.js";
-import {
-    createNewAddress,
-    checkIfAddressExists,
-    getAddressId,
-    getCEPData,
-    createAddressIfItDoesntExists,
-} from "../services/addresses-services.js";
+import { createAddressIfItDoesntExists } from "../services/addresses-services.js";
 import {
     createNewUser,
     deleteCustomerFromDb,
     getAllCustomersFromDb,
+    getCustomerByIdFromDb,
     updateCustomer,
 } from "../services/customers-services.js";
 
@@ -53,6 +47,10 @@ async function patchCustomerById(req: Request, res: Response) {
 
         res.sendStatus(200);
     } catch (err) {
+        if (err.name === "NotFoundError") {
+            return res.status(404).send({ message: err.message });
+        }
+
         console.error(err);
         res.status(500).send(err.message);
     }
@@ -75,9 +73,26 @@ async function deleteCustomerById(req: Request, res: Response) {
     }
 }
 
+async function getCustomerById(req: Request, res: Response) {
+    const customerId = req.params.id;
+
+    try {
+        const customer = await getCustomerByIdFromDb(Number(customerId));
+        res.send(customer);
+    } catch (err) {
+        if (err.name === "NotFoundError") {
+            return res.status(404).send({ message: err.message });
+        }
+
+        console.error(err);
+        res.status(500).send(err.message);
+    }
+}
+
 export {
     postNewCustomer,
     getAllCustomers,
     patchCustomerById,
     deleteCustomerById,
+    getCustomerById,
 };

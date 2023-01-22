@@ -4,102 +4,86 @@ import CitiesRepository from "../repositories/cities.repository.js";
 import StatesRepository from "../repositories/states.repository.js";
 
 export async function getCEPData(cep: string): Promise<CEPData> {
-    try {
-        const res = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-        return res.data;
-    } catch (err) {
-        throw err;
-    }
+    const res = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+    return res.data;
 }
 
 export async function checkIfAddressExists(CEPData, address) {
-    try {
-        const state = await StatesRepository.selectStateByName(CEPData.uf);
+    const state = await StatesRepository.selectStateByName(CEPData.uf);
 
-        if (!state) {
-            return {
-                stateExists: false,
-                cityExists: false,
-                addressExists: false,
-                id: undefined,
-            };
-        }
+    if (!state) {
+        return {
+            stateExists: false,
+            cityExists: false,
+            addressExists: false,
+            id: undefined,
+        };
+    }
 
-        const city = await CitiesRepository.selectCityByName(
-            CEPData.localidade,
-            CEPData.uf
-        );
+    const city = await CitiesRepository.selectCityByName(
+        CEPData.localidade,
+        CEPData.uf
+    );
 
-        if (!city) {
-            return {
-                stateExists: true,
-                cityExists: false,
-                addressExists: false,
-                id: undefined,
-            };
-        }
+    if (!city) {
+        return {
+            stateExists: true,
+            cityExists: false,
+            addressExists: false,
+            id: undefined,
+        };
+    }
 
-        const addressId = await AddressesRepository.selectAddressIdByFilter(
-            address,
-            CEPData
-        );
+    const addressId = await AddressesRepository.selectAddressIdByFilter(
+        address,
+        CEPData
+    );
 
-        if (!addressId) {
-            return {
-                stateExists: true,
-                cityExists: true,
-                addressExists: false,
-                id: undefined,
-            };
-        }
-
+    if (!addressId) {
         return {
             stateExists: true,
             cityExists: true,
-            addressExists: true,
-            id: addressId.id,
+            addressExists: false,
+            id: undefined,
         };
-    } catch (err) {
-        throw err;
     }
+
+    return {
+        stateExists: true,
+        cityExists: true,
+        addressExists: true,
+        id: addressId.id,
+    };
 }
 
 export async function createNewAddress(addressInDb, CEPData, address) {
-    try {
-        if (!addressInDb.stateExists) {
-            await StatesRepository.insertNewState(CEPData.uf);
-        }
+    if (!addressInDb.stateExists) {
+        await StatesRepository.insertNewState(CEPData.uf);
+    }
 
-        const state = await StatesRepository.selectStateByName(CEPData.uf);
+    const state = await StatesRepository.selectStateByName(CEPData.uf);
 
-        if (!addressInDb.cityExists) {
-            await CitiesRepository.insertNewCity(CEPData.localidade, state.id);
-        }
+    if (!addressInDb.cityExists) {
+        await CitiesRepository.insertNewCity(CEPData.localidade, state.id);
+    }
 
-        const city = await CitiesRepository.selectCityByName(
-            CEPData.localidade,
-            CEPData.uf
-        );
+    const city = await CitiesRepository.selectCityByName(
+        CEPData.localidade,
+        CEPData.uf
+    );
 
-        if (!addressInDb.addressExists) {
-            await AddressesRepository.insertNewAddress(address, city.id);
-        }
-    } catch (err) {
-        throw err;
+    if (!addressInDb.addressExists) {
+        await AddressesRepository.insertNewAddress(address, city.id);
     }
 }
 
 export async function getAddressId(CEPData, address) {
-    try {
-        const addressId = await AddressesRepository.selectAddressIdByFilter(
-            address,
-            CEPData
-        );
+    const addressId = await AddressesRepository.selectAddressIdByFilter(
+        address,
+        CEPData
+    );
 
-        return addressId;
-    } catch (err) {
-        throw err;
-    }
+    return addressId;
 }
 
 export async function createAddressIfItDoesntExists(address) {

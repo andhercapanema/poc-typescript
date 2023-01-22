@@ -13,3 +13,11 @@ export async function createNewUser(
         throw err;
     }
 }
+
+export async function getAllCustomersFromDb() {
+    try {
+        return await CustomersRepository.selectAllCustomers();
+    } catch (err) {
+        throw err;
+    }
+}

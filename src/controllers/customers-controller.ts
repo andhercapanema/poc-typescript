@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Customer } from "../Protocols/Customer.js";
+import CustomersRepository from "../repositories/customers-repository.js";
 import {
     createNewAddress,
     checkIfAddressExists,
@@ -33,7 +34,13 @@ async function postNewCustomer(req: Request, res: Response) {
 }
 
 async function getAllCustomers(req: Request, res: Response) {
-    res.sendStatus(220);
+    try {
+        const customers = await CustomersRepository.selectAllCustomers();
+        res.send(customers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 }
 
 export { getAllCustomers, postNewCustomer };

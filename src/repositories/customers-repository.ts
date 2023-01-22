@@ -11,6 +11,13 @@ const CustomersRepository = {
             [name, cpf, phone, birthDate, addressId]
         );
     },
+    selectAllCustomers: async () => {
+        const customers = await connection.query(
+            `SELECT *
+            FROM customers;`
+        );
+        return customers.rows;
+    },
 };
 
 export default CustomersRepository;

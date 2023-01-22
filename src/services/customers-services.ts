@@ -1,14 +1,12 @@
 import { notFoundError } from "../errors/not-found-error.js";
+import { Customer } from "../Protocols/Customer.js";
 import CustomersRepository from "../repositories/customers-repository.js";
 
 export async function createNewUser(
-    { name, cpf, phone, birthDate },
+    NewCustomerData: Customer,
     addressId: number
 ) {
-    await CustomersRepository.insertNewCustomer(
-        { name, cpf, phone, birthDate },
-        addressId
-    );
+    await CustomersRepository.insertNewCustomer(NewCustomerData, addressId);
 }
 
 export const getAllCustomersFromDb = async () =>
@@ -18,13 +16,15 @@ export const checkIfUserIdExists = async (customerId: number) =>
     await getCustomerByIdFromDb(customerId);
 
 export async function updateCustomer(
-    { customerId, name, cpf, phone, birthDate },
+    customerId: number,
+    customerDataToUpdate: Customer,
     addressId: number
 ) {
     await checkIfUserIdExists(customerId);
 
     await CustomersRepository.updateCustomerById(
-        { customerId, name, cpf, phone, birthDate },
+        customerId,
+        customerDataToUpdate,
         addressId
     );
 }

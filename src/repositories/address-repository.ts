@@ -1,10 +1,11 @@
 import connection from "../database/database.js";
+import { Address } from "../Protocols/Address.js";
 
 const AddressesRepository = {
     selectAddressIdByFilter: async (
         { street, number, complement },
         { uf, localidade }
-    ) => {
+    ): Promise<{ id: number }> => {
         const city = await connection.query(
             `SELECT a.id
             FROM addresses AS a
@@ -22,10 +23,9 @@ const AddressesRepository = {
         );
         return city.rows[0];
     },
-    insertNewAddress: async (
-        { street, number, zipCode, complement, district, reference },
-        city_id: number
-    ) => {
+    insertNewAddress: async (address: Address, city_id: number) => {
+        const { street, number, zipCode, complement, district, reference } =
+            address;
         await connection.query(
             `INSERT INTO addresses (street, number, zip_code, complement, district, city_id, reference)
             VALUES ($1, $2, $3, $4, $5, $6, $7);`,

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Address, AddressCheck } from "../Protocols/Address.js";
 import AddressesRepository from "../repositories/address-repository.js";
 import CitiesRepository from "../repositories/cities.repository.js";
 import StatesRepository from "../repositories/states.repository.js";
@@ -8,7 +9,10 @@ export async function getCEPData(cep: string): Promise<CEPData> {
     return res.data;
 }
 
-export async function checkIfAddressExists(CEPData, address) {
+export async function checkIfAddressExists(
+    CEPData: CEPData,
+    address: Address
+): Promise<AddressCheck> {
     const state = await StatesRepository.selectStateByName(CEPData.uf);
 
     if (!state) {
@@ -56,47 +60,55 @@ export async function checkIfAddressExists(CEPData, address) {
     };
 }
 
-export async function createNewAddress(addressInDb, CEPData, address) {
+export async function createNewAddress(
+    addressInDb: AddressCheck,
+    CEPData: CEPData,
+    address: Address
+) {
     if (!addressInDb.stateExists) {
         await StatesRepository.insertNewState(CEPData.uf);
     }
 
-    const state = await StatesRepository.selectStateByName(CEPData.uf);
-
     if (!addressInDb.cityExists) {
+        const state = await StatesRepository.selectStateByName(CEPData.uf);
         await CitiesRepository.insertNewCity(CEPData.localidade, state.id);
     }
 
-    const city = await CitiesRepository.selectCityByName(
-        CEPData.localidade,
-        CEPData.uf
-    );
-
     if (!addressInDb.addressExists) {
+        const city = await CitiesRepository.selectCityByName(
+            CEPData.localidade,
+            CEPData.uf
+        );
         await AddressesRepository.insertNewAddress(address, city.id);
     }
 }
 
-export async function getAddressId(CEPData, address) {
+export async function getAddressId(
+    CEPData: CEPData,
+    address: Address
+): Promise<number> {
     const addressId = await AddressesRepository.selectAddressIdByFilter(
         address,
         CEPData
     );
 
-    return addressId;
+    return addressId.id;
 }
 
-export async function createAddressIfItDoesntExists(address) {
+export async function createAddressIfItDoesntExists(
+    address: Address
+): Promise<number> {
     const CEPData = await getCEPData(address.zipCode);
 
     if (CEPData.logradouro !== "") address.street = CEPData.logradouro;
     if (CEPData.bairro !== "") address.district = CEPData.bairro;
 
-    let addressInDb = await checkIfAddressExists(CEPData, address);
+    const addressInDb = await checkIfAddressExists(CEPData, address);
 
     if (!addressInDb.id) {
         await createNewAddress(addressInDb, CEPData, address);
-        addressInDb = await getAddressId(CEPData, address);
+        const addressId = await getAddressId(CEPData, address);
+        return addressId;
     }
 
     return addressInDb.id;

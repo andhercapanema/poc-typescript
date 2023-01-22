@@ -1,7 +1,11 @@
 import connection from "../database/database.js";
+import { CityEntity } from "../Protocols/City.js";
 
 const CitiesRepository = {
-    selectCityByName: async (cityName: string, stateName: string) => {
+    selectCityByName: async (
+        cityName: string,
+        stateName: string
+    ): Promise<CityEntity> => {
         const city = await connection.query(
             `SELECT *
             FROM cities AS c

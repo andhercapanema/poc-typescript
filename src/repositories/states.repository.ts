@@ -1,7 +1,8 @@
 import connection from "../database/database.js";
+import { StateEntity } from "../Protocols/State.js";
 
 const StatesRepository = {
-    selectStateByName: async (name: string) => {
+    selectStateByName: async (name: string): Promise<StateEntity> => {
         const state = await connection.query(
             `SELECT *
             FROM states

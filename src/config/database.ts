@@ -9,6 +9,4 @@ const configDatabase = {
 
 if (process.env.MODE === "prod") configDatabase.ssl = true;
 
-const connection = new pg.Pool(configDatabase);
-
-export default connection;
+export const connection = new pg.Pool(configDatabase);

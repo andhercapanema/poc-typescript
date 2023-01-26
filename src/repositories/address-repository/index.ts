@@ -1,11 +1,14 @@
-import connection from "../database/database.js";
-import { Address } from "../Protocols/Address.js";
+import { connection } from "@/config";
+import { Address } from "@/Protocols";
+import { CEPData } from "@/services";
 
 const AddressesRepository = {
     selectAddressIdByFilter: async (
-        { street, number, complement },
-        { uf, localidade }
+        address: Address,
+        CEPData: CEPData
     ): Promise<{ id: number }> => {
+        const { street, number, complement } = address;
+        const { uf, localidade } = CEPData;
         const city = await connection.query(
             `SELECT a.id
             FROM addresses AS a

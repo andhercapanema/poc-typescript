@@ -1,6 +1,6 @@
 import { ApplicationError } from "../Protocols/ApplicationError";
 
-export default function invalidDataError(
+export function invalidDataError(
     details: string[]
 ): ApplicationInvalidateDataError {
     return {

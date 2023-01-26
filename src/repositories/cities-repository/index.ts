@@ -1,5 +1,5 @@
-import connection from "../database/database.js";
-import { CityEntity } from "../Protocols/City.js";
+import { connection } from "@/config";
+import { CityEntity } from "@/Protocols";
 
 const CitiesRepository = {
     selectCityByName: async (

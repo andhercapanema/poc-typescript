@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
-import { Customer, CustomerWithAddress } from "../Protocols/Customer.js";
-import { createAddressIfItDoesntExists } from "../services/addresses-services.js";
+import { Customer, CustomerWithAddress } from "@/Protocols";
 import {
+    createAddressIfItDoesntExists,
     createNewUser,
     deleteCustomerFromDb,
     getAllCustomersFromDb,
     getCustomerByIdFromDb,
     updateCustomer,
-} from "../services/customers-services.js";
+} from "@/services";
+import { Request, Response } from "express";
 
 async function postNewCustomer(req: Request, res: Response) {
     const { name, cpf, phone, birthDate, address } =

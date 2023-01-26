@@ -1,6 +1,6 @@
+import { connection } from "@/config";
+import { Customer, CustomerEntity } from "@/Protocols";
 import { QueryResult } from "pg";
-import connection from "../database/database.js";
-import { Customer, CustomerEntity } from "../Protocols/Customer.js";
 
 const CustomersRepository = {
     insertNewCustomer: async (NewCustomerData: Customer, addressId: number) => {

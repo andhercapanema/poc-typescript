@@ -1,6 +1,6 @@
-import { notFoundError } from "../errors/not-found-error.js";
-import { Customer } from "../Protocols/Customer.js";
-import CustomersRepository from "../repositories/customers-repository.js";
+import { notFoundError } from "@/errors";
+import { Customer } from "@/Protocols";
+import CustomersRepository from "@/repositories/customers-repository";
 
 export async function createNewUser(
     NewCustomerData: Customer,

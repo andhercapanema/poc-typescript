@@ -1,5 +1,5 @@
 import joi from "joi";
-import { addressSchema } from "./address-schema.js";
+import { addressSchema } from "@/schemas";
 
 export const customerSchema = joi.object({
     name: joi.string().required().trim(),

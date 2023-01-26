@@ -1,13 +1,13 @@
-import { Router } from "express";
 import {
     deleteCustomerById,
     getAllCustomers,
     getCustomerById,
     patchCustomerById,
     postNewCustomer,
-} from "../controllers/customers-controller.js";
-import { validateBody } from "../middlewares/validation-middleware.js";
-import { customerSchema } from "../schemas/customer-schema.js";
+} from "@/controllers";
+import { validateBody } from "@/middlewares";
+import { customerSchema } from "@/schemas";
+import { Router } from "express";
 
 const router = Router();
 router.get("", getAllCustomers);

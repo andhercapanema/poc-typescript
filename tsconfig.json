@@ -2,10 +2,24 @@
     "compilerOptions": {
         "outDir": "dist",
         "esModuleInterop": true,
-        "module": "ES6",
-        "moduleResolution": "node"
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["*"]
+        },
+        "plugins": [
+            {
+                "transform": "typescript-transform-paths"
+            }
+        ]
     },
     "ts-node": {
-        "esm": true
-    }
+        "esm": true,
+        "transpileOnly": true,
+        "require": ["tsconfig-paths/register"]
+    },
+    "include": ["src"]
 }

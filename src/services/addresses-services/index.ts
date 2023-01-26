@@ -1,8 +1,8 @@
+import { Address, AddressCheck } from "@/Protocols";
+import AddressesRepository from "@/repositories/address-repository";
+import CitiesRepository from "@/repositories/cities-repository";
+import StatesRepository from "@/repositories/states-repository";
 import axios from "axios";
-import { Address, AddressCheck } from "../Protocols/Address.js";
-import AddressesRepository from "../repositories/address-repository.js";
-import CitiesRepository from "../repositories/cities.repository.js";
-import StatesRepository from "../repositories/states.repository.js";
 
 export async function getCEPData(cep: string): Promise<CEPData> {
     const res = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
@@ -114,7 +114,7 @@ export async function createAddressIfItDoesntExists(
     return addressInDb.id;
 }
 
-type CEPData = {
+export type CEPData = {
     cep: string;
     logradouro: string;
     complemento: string;

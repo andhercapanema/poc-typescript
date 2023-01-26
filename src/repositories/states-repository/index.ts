@@ -1,5 +1,5 @@
-import connection from "../database/database.js";
-import { StateEntity } from "../Protocols/State.js";
+import { connection } from "@/config";
+import { StateEntity } from "@/Protocols";
 
 const StatesRepository = {
     selectStateByName: async (name: string): Promise<StateEntity> => {

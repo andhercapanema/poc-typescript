@@ -1,14 +1,10 @@
 import { notFoundError } from "@/errors";
-import { Customer } from "@/Protocols";
+import { CustomerCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import CustomersRepository from "@/repositories/customers-repository";
 
-export async function createNewCustomer(newCustomerData: Customer) {
-    await CustomersRepository.insertNewCustomer(newCustomerData);
-    const createdCustomer = await CustomersRepository.selectCustomersByCpf(
-        parseInt(newCustomerData.cpf)
-    );
-    return createdCustomer.id;
+export async function createNewCustomer(newCustomerData: CustomerCreateInput) {
+    return await CustomersRepository.createCustomer(newCustomerData);
 }
 
 export const getAllCustomersFromDb = async () =>
@@ -23,7 +19,7 @@ export async function getCustomerByIdFromDb(customerId: number) {
 
 export async function updateCustomer(
     customerId: number,
-    customerDataToUpdate: Customer
+    customerDataToUpdate: CustomerCreateInput
 ) {
     await getCustomerByIdFromDb(customerId);
 

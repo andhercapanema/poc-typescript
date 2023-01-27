@@ -1,17 +1,40 @@
 import { notFoundError } from "@/errors";
-import { Address } from "@/Protocols";
+import { requestError } from "@/errors/request-error";
+import { AddressCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import axios from "axios";
 
+export async function viacepRequest(
+    inputCep: string
+): Promise<ViaCEPAddressError | CEPDataResponse> {
+    try {
+        const { data } = await axios.get(
+            `https://viacep.com.br/ws/${inputCep}/json/`
+        );
+
+        return data;
+    } catch (err) {
+        const { status, statusText } = err.response;
+        throw requestError(status, statusText);
+    }
+}
+
 export async function getCEPData(inputCep: string): Promise<CEPData> {
-    const res = await axios.get(`https://viacep.com.br/ws/${inputCep}/json/`);
+    const viacepResponse = await viacepRequest(inputCep);
+
+    const viaCEPAddressError = viacepResponse as ViaCEPAddressError;
+    if (viaCEPAddressError.erro) throw notFoundError("CEP");
+
     const { cep, logradouro, bairro, localidade, uf } =
-        res.data as CEPDataResponse;
+        viacepResponse as CEPDataResponse;
     return { cep, logradouro, bairro, localidade, uf };
 }
 
-export async function createNewAddress(address: Address, customerId: number) {
-    await AddressesRepository.insertNewAddress(address, customerId);
+export async function createNewAddress(
+    address: AddressCreateInput,
+    customerId: number
+) {
+    await AddressesRepository.createAddress(address, customerId);
 }
 
 export async function getAddressByIdFromDb(id: number) {
@@ -21,7 +44,10 @@ export async function getAddressByIdFromDb(id: number) {
     return address;
 }
 
-export async function updateAddress(id: number, addressDataToUpdate: Address) {
+export async function updateAddress(
+    id: number,
+    addressDataToUpdate: AddressCreateInput
+) {
     await getAddressByIdFromDb(id);
 
     await AddressesRepository.updateAddressById(id, addressDataToUpdate);
@@ -44,3 +70,7 @@ export type CEPData = Omit<
     CEPDataResponse,
     "complemento" | "ibge" | "gia" | "ddd" | "siafi"
 >;
+
+export type ViaCEPAddressError = {
+    erro: boolean;
+};

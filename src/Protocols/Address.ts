@@ -1,23 +1,8 @@
-export type AddressEntity = {
-    id: number;
-    street: string;
-    number: number;
-    zip_code: string;
-    complement: string;
-    district: string;
-    reference: string;
-    city: string;
-    state: string;
-    customer_id: number;
-};
+import { Address } from "@prisma/client";
 
-export type Address = {
-    street: string;
-    number: number;
+export type AddressCreateInput = Omit<
+    Address,
+    "id" | "zip_code" | "customer_id" | "created_at" | "updated_at"
+> & {
     zipCode: string;
-    complement: string;
-    district: string;
-    reference: string;
-    city: string;
-    state: string;
 };

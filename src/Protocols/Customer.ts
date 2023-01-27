@@ -1,26 +1,13 @@
-import { Address } from "./Address";
+import { Customer } from "@prisma/client";
+import { AddressCreateInput } from "./Address";
 
-export type CustomerEntity = {
-    id: number;
-    name: string;
-    cpf: string;
-    phone: string;
-    birth_date: Date;
-    created_at: Date;
-    updated_at: Date;
+export type CustomerWithAddress = CustomerCreateInput & {
+    address: AddressCreateInput;
 };
 
-export type CustomerWithAddress = {
-    name: string;
-    cpf: string;
-    phone: string;
-    birthDate: Date;
-    address: Address;
-};
-
-export type Customer = {
-    name: string;
-    cpf: string;
-    phone: string;
+export type CustomerCreateInput = Omit<
+    Customer,
+    "id" | "birth_date" | "created_at" | "updated_at"
+> & {
     birthDate: Date;
 };

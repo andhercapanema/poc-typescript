@@ -7,6 +7,15 @@ async function getCepData(req: Request, res: Response) {
         res.send(cepData);
     } catch (err) {
         console.error(err);
+
+        if (err.name === "RequestError") {
+            return res.status(400).send({ message: "Invalid CEP" });
+        }
+
+        if (err.name === "NotFoundError") {
+            return res.status(404).send(err);
+        }
+
         res.status(500).send(err.message);
     }
 }

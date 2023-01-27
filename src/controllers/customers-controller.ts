@@ -1,4 +1,4 @@
-import { Customer, CustomerWithAddress } from "@/Protocols";
+import { CustomerCreateInput, CustomerWithAddress } from "@/Protocols";
 import {
     createNewAddress,
     createNewCustomer,
@@ -12,11 +12,16 @@ import { Request, Response } from "express";
 async function postNewCustomer(req: Request, res: Response) {
     const { name, cpf, phone, birthDate, address } =
         req.body as CustomerWithAddress;
-    const NewCustomerData: Customer = { name, cpf, phone, birthDate };
+    const NewCustomerData: CustomerCreateInput = {
+        name,
+        cpf,
+        phone,
+        birthDate,
+    };
 
     try {
-        const customerId = await createNewCustomer(NewCustomerData);
-        await createNewAddress(address, customerId);
+        const createdCustomer = await createNewCustomer(NewCustomerData);
+        await createNewAddress(address, createdCustomer.id);
         res.sendStatus(201);
     } catch (err) {
         console.error(err);

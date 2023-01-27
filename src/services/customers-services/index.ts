@@ -1,33 +1,18 @@
 import { notFoundError } from "@/errors";
 import { Customer } from "@/Protocols";
+import AddressesRepository from "@/repositories/address-repository";
 import CustomersRepository from "@/repositories/customers-repository";
 
-export async function createNewUser(
-    NewCustomerData: Customer,
-    addressId: number
-) {
-    await CustomersRepository.insertNewCustomer(NewCustomerData, addressId);
+export async function createNewCustomer(newCustomerData: Customer) {
+    await CustomersRepository.insertNewCustomer(newCustomerData);
+    const createdCustomer = await CustomersRepository.selectCustomersByCpf(
+        parseInt(newCustomerData.cpf)
+    );
+    return createdCustomer.id;
 }
 
 export const getAllCustomersFromDb = async () =>
     await CustomersRepository.selectAllCustomers();
-
-export const checkIfUserIdExists = async (customerId: number) =>
-    await getCustomerByIdFromDb(customerId);
-
-export async function updateCustomer(
-    customerId: number,
-    customerDataToUpdate: Customer,
-    addressId: number
-) {
-    await checkIfUserIdExists(customerId);
-
-    await CustomersRepository.updateCustomerById(
-        customerId,
-        customerDataToUpdate,
-        addressId
-    );
-}
 
 export async function getCustomerByIdFromDb(customerId: number) {
     const customer = await CustomersRepository.selectCustomersById(customerId);
@@ -36,8 +21,22 @@ export async function getCustomerByIdFromDb(customerId: number) {
     return customer;
 }
 
+export async function updateCustomer(
+    customerId: number,
+    customerDataToUpdate: Customer
+) {
+    await getCustomerByIdFromDb(customerId);
+
+    await CustomersRepository.updateCustomerById(
+        customerId,
+        customerDataToUpdate
+    );
+}
+
 export async function deleteCustomerFromDb(customerId: number) {
-    await checkIfUserIdExists(customerId);
+    await getCustomerByIdFromDb(customerId);
+
+    await AddressesRepository.deleteAddressesByCustomerId(customerId);
 
     await CustomersRepository.deleteCustomerById(customerId);
 }

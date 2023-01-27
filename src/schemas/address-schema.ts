@@ -11,4 +11,6 @@ export const addressSchema = joi.object({
     complement: joi.string().trim(),
     district: joi.string().required().trim(),
     reference: joi.string().trim(),
+    city: joi.string().required().trim(),
+    state: joi.string().required().trim(),
 });

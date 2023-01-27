@@ -1,38 +1,76 @@
 import { connection } from "@/config";
-import { Address } from "@/Protocols";
-import { CEPData } from "@/services";
+import { Address, AddressEntity } from "@/Protocols";
 
 const AddressesRepository = {
-    selectAddressIdByFilter: async (
-        address: Address,
-        CEPData: CEPData
-    ): Promise<{ id: number }> => {
-        const { street, number, complement } = address;
-        const { uf, localidade } = CEPData;
-        const city = await connection.query(
-            `SELECT a.id
-            FROM addresses AS a
-                JOIN cities AS c
-                ON a.city_id = c.id
-                    JOIN states AS s
-                    ON c.state_id = s.id
-                    WHERE
-                        s.name = $1 AND
-                        c.name = $2 AND
-                        a.street = $3 AND
-                        a.number = $4 AND
-                        a.complement = $5;`,
-            [uf, localidade, street, number, complement]
-        );
-        return city.rows[0];
-    },
-    insertNewAddress: async (address: Address, city_id: number) => {
-        const { street, number, zipCode, complement, district, reference } =
-            address;
+    insertNewAddress: async (address: Address, customerId: number) => {
+        const {
+            street,
+            number,
+            zipCode,
+            complement,
+            district,
+            reference,
+            city,
+            state,
+        } = address;
         await connection.query(
-            `INSERT INTO addresses (street, number, zip_code, complement, district, city_id, reference)
-            VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-            [street, number, zipCode, complement, district, city_id, reference]
+            `INSERT INTO addresses (street, number, zip_code, complement, district, reference, city, state, customer_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+            [
+                street,
+                number,
+                zipCode,
+                complement,
+                district,
+                reference,
+                city,
+                state,
+                customerId,
+            ]
+        );
+    },
+    selectAddressById: async (id: number): Promise<AddressEntity> => {
+        const address = await connection.query(
+            `SELECT *
+            FROM addresses
+            WHERE id = $1;`,
+            [id]
+        );
+        return address.rows[0];
+    },
+    updateAddressById: async (id: number, addressDataToUpdate: Address) => {
+        const {
+            street,
+            number,
+            zipCode,
+            complement,
+            district,
+            reference,
+            city,
+            state,
+        } = addressDataToUpdate;
+        await connection.query(
+            `UPDATE addresses
+            SET street = $1, number = $2, zip_code = $3, complement = $4, district = $5, reference = $6, city = $7, state = $8
+            WHERE id = $9;`,
+            [
+                street,
+                number,
+                zipCode,
+                complement,
+                district,
+                reference,
+                city,
+                state,
+                id,
+            ]
+        );
+    },
+    deleteAddressesByCustomerId: async (customerId: number) => {
+        await connection.query(
+            `DELETE FROM addresses
+            WHERE customer_id = $1;`,
+            [customerId]
         );
     },
 };

@@ -6,7 +6,7 @@ import {
     postNewCustomer,
 } from "@/controllers";
 import { validateBody } from "@/middlewares";
-import { customerSchema } from "@/schemas";
+import { customerSchema, customerWithAddressSchema } from "@/schemas";
 import { Router } from "express";
 
 const router = Router();
@@ -14,8 +14,7 @@ router.get("", getAllCustomers);
 router.get("/:id", getCustomerById);
 router.delete("/:id", deleteCustomerById);
 
-router.use(validateBody(customerSchema));
-router.post("", postNewCustomer);
-router.patch("/:id", patchCustomerById);
+router.post("", validateBody(customerWithAddressSchema), postNewCustomer);
+router.patch("/:id", validateBody(customerSchema), patchCustomerById);
 
 export default router;

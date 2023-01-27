@@ -6,14 +6,9 @@ export type AddressEntity = {
     complement: string;
     district: string;
     reference: string;
-    city_id: number;
-};
-
-export type AddressCheck = {
-    id: number;
-    stateExists: boolean;
-    cityExists: boolean;
-    addressExists: boolean;
+    city: string;
+    state: string;
+    customer_id: number;
 };
 
 export type Address = {
@@ -23,4 +18,6 @@ export type Address = {
     complement: string;
     district: string;
     reference: string;
+    city: string;
+    state: string;
 };

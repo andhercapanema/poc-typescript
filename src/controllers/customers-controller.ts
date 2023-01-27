@@ -1,7 +1,7 @@
 import { Customer, CustomerWithAddress } from "@/Protocols";
 import {
-    createAddressIfItDoesntExists,
-    createNewUser,
+    createNewAddress,
+    createNewCustomer,
     deleteCustomerFromDb,
     getAllCustomersFromDb,
     getCustomerByIdFromDb,
@@ -15,9 +15,8 @@ async function postNewCustomer(req: Request, res: Response) {
     const NewCustomerData: Customer = { name, cpf, phone, birthDate };
 
     try {
-        const addressId = await createAddressIfItDoesntExists(address);
-
-        await createNewUser(NewCustomerData, addressId);
+        const customerId = await createNewCustomer(NewCustomerData);
+        await createNewAddress(address, customerId);
         res.sendStatus(201);
     } catch (err) {
         console.error(err);
@@ -36,16 +35,8 @@ async function getAllCustomers(req: Request, res: Response) {
 }
 
 async function patchCustomerById(req: Request, res: Response) {
-    const { name, cpf, phone, birthDate, address } =
-        req.body as CustomerWithAddress;
-    const customerDataToUpdate: Customer = { name, cpf, phone, birthDate };
-    const customerId = Number(req.params.id);
-
     try {
-        const addressId = await createAddressIfItDoesntExists(address);
-
-        await updateCustomer(customerId, customerDataToUpdate, addressId);
-
+        await updateCustomer(parseInt(req.params.id), req.body);
         res.sendStatus(200);
     } catch (err) {
         if (err.name === "NotFoundError") {
@@ -58,11 +49,8 @@ async function patchCustomerById(req: Request, res: Response) {
 }
 
 async function deleteCustomerById(req: Request, res: Response) {
-    const customerId = Number(req.params.id);
-
     try {
-        await deleteCustomerFromDb(customerId);
-
+        await deleteCustomerFromDb(Number(req.params.id));
         res.sendStatus(200);
     } catch (err) {
         if (err.name === "NotFoundError") {
@@ -75,10 +63,8 @@ async function deleteCustomerById(req: Request, res: Response) {
 }
 
 async function getCustomerById(req: Request, res: Response) {
-    const customerId = Number(req.params.id);
-
     try {
-        const customer = await getCustomerByIdFromDb(customerId);
+        const customer = await getCustomerByIdFromDb(Number(req.params.id));
         res.send(customer);
     } catch (err) {
         if (err.name === "NotFoundError") {

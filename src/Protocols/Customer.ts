@@ -7,7 +7,7 @@ export type CustomerEntity = {
     phone: string;
     birth_date: Date;
     created_at: Date;
-    address_id: number;
+    updated_at: Date;
 };
 
 export type CustomerWithAddress = {

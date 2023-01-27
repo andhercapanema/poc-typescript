@@ -1,5 +1,4 @@
-import { notFoundError } from "@/errors";
-import { requestError } from "@/errors/request-error";
+import { notFoundError, requestError } from "@/errors";
 import { AddressCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import axios from "axios";

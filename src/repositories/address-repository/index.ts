@@ -7,12 +7,11 @@ const AddressesRepository = {
         addressWithZipCode: AddressCreateInput,
         customerId: number
     ) => {
-        const zipCode = addressWithZipCode.zipCode;
         const address = exclude(addressWithZipCode, "zipCode");
         return prisma.address.create({
             data: {
                 ...address,
-                zip_code: zipCode,
+                zip_code: addressWithZipCode.zipCode,
                 customer_id: customerId,
             },
         });
@@ -28,7 +27,6 @@ const AddressesRepository = {
         id: number,
         addressWithZipCode: AddressCreateInput
     ) => {
-        const zipCode = addressWithZipCode.zipCode;
         const address = exclude(addressWithZipCode, "zipCode");
         return prisma.address.update({
             where: {
@@ -36,7 +34,7 @@ const AddressesRepository = {
             },
             data: {
                 ...address,
-                zip_code: zipCode,
+                zip_code: addressWithZipCode.zipCode,
             },
         });
     },

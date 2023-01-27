@@ -26,11 +26,18 @@ const CustomersRepository = {
         id: number,
         updateCustomerData: CustomerCreateInput
     ) => {
+        const customerWithoutBirthdate = exclude(
+            updateCustomerData,
+            "birthDate"
+        );
         return prisma.customer.update({
             where: {
                 id,
             },
-            data: updateCustomerData,
+            data: {
+                ...customerWithoutBirthdate,
+                birth_date: new Date(updateCustomerData.birthDate),
+            },
         });
     },
     deleteCustomerById: async (id: number) => {

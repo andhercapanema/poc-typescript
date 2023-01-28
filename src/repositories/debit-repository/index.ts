@@ -1,16 +1,24 @@
 import { prisma } from "@/config";
-import { DebitCreateInput } from "@/Protocols";
-import { addMonths } from "date-fns";
+import {
+    DatabaseDebitCreateInput,
+    DebitCreateInput,
+    DebitSearchParams,
+} from "@/Protocols";
+import { camelToSnakeCaseKeys } from "@/utils/prisma-utils";
 
 const DebitsRepository = {
-    createDebit: async (debitCreateInput: DebitCreateInput) => {
-        const { customerId, value, dueAt } = debitCreateInput;
+    create: async (debitCreateInput: DebitCreateInput) => {
         return prisma.debit.create({
-            data: {
-                customer_id: customerId,
-                value,
-                due_at: dueAt,
-            },
+            data: camelToSnakeCaseKeys(
+                debitCreateInput
+            ) as DatabaseDebitCreateInput,
+        });
+    },
+    findMany: async (searchParams: DebitSearchParams) => {
+        console.log("antes: ", searchParams);
+        console.log("depois: ", camelToSnakeCaseKeys(searchParams));
+        return prisma.debit.findMany({
+            where: camelToSnakeCaseKeys(searchParams),
         });
     },
 };

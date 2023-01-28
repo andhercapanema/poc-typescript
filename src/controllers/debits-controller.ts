@@ -1,4 +1,4 @@
-import { createNewDebit } from "@/services";
+import { createNewDebit, getDebitsFromDb } from "@/services";
 import { Request, Response } from "express";
 
 async function postNewDebit(req: Request, res: Response) {
@@ -11,13 +11,14 @@ async function postNewDebit(req: Request, res: Response) {
     }
 }
 
-async function getDebts(req: Request, res: Response) {
+async function getDebits(req: Request, res: Response) {
     try {
-        res.status(220).send("GET /debits");
+        const debits = await getDebitsFromDb(req.query);
+        res.status(200).send(debits);
     } catch (err) {
         console.error(err);
         res.status(500).send(err.message);
     }
 }
 
-export { postNewDebit, getDebts };
+export { postNewDebit, getDebits };

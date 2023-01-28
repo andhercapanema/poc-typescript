@@ -10,11 +10,11 @@ import { customerSchema, customerWithAddressSchema } from "@/schemas";
 import { Router } from "express";
 
 const router = Router();
-router.get("", getAllCustomers);
-router.get("/:id", getCustomerById);
-router.delete("/:id", deleteCustomerById);
-
-router.post("", validateBody(customerWithAddressSchema), postNewCustomer);
-router.patch("/:id", validateBody(customerSchema), patchCustomerById);
+router
+    .get("", getAllCustomers)
+    .get("/:id", getCustomerById)
+    .delete("/:id", deleteCustomerById)
+    .post("", validateBody(customerWithAddressSchema), postNewCustomer)
+    .patch("/:id", validateBody(customerSchema), patchCustomerById);
 
 export default router;

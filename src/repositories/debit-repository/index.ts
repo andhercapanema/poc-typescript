@@ -21,6 +21,16 @@ const DebitsRepository = {
             where: camelToSnakeCaseKeys(searchParams),
         });
     },
+    updatePaidToTrue: async (id: number) => {
+        return prisma.debit.update({
+            where: {
+                id,
+            },
+            data: {
+                paid: true,
+            },
+        });
+    },
 };
 
 export default DebitsRepository;

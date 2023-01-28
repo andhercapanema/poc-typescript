@@ -1,6 +1,7 @@
 import {
     DebitCreateInput,
     DebitSearchParams,
+    PayDebitInput,
     RequestDebitSearchParams,
 } from "@/Protocols";
 import DebitsRepository from "@/repositories/debit-repository";
@@ -37,4 +38,8 @@ export async function getDebitsFromDb(searchParams: RequestDebitSearchParams) {
     const debits = await DebitsRepository.findMany(databaseTypesSearchParams);
 
     return debits;
+}
+
+export async function updateDebitPaidStatus(payDebitInput: PayDebitInput) {
+    return await DebitsRepository.updatePaidToTrue(payDebitInput.id);
 }

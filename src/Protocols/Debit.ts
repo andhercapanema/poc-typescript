@@ -32,3 +32,7 @@ export type DatabaseDebitCreateInput = {
     due_at: Date;
     customer_id: number;
 };
+
+export type PayDebitInput = {
+    id: number;
+};

@@ -15,8 +15,6 @@ const DebitsRepository = {
         });
     },
     findMany: async (searchParams: DebitSearchParams) => {
-        console.log("antes: ", searchParams);
-        console.log("depois: ", camelToSnakeCaseKeys(searchParams));
         return prisma.debit.findMany({
             where: camelToSnakeCaseKeys(searchParams),
         });

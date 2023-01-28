@@ -22,62 +22,62 @@ async function postNewCustomer(req: Request, res: Response) {
     try {
         const createdCustomer = await createNewCustomer(NewCustomerData);
         await createNewAddress(address, createdCustomer.id);
-        res.sendStatus(201);
+        return res.sendStatus(201);
     } catch (err) {
         console.error(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 
 async function getAllCustomers(req: Request, res: Response) {
     try {
         const customers = await getAllCustomersFromDb();
-        res.send(customers);
+        return res.send(customers);
     } catch (err) {
         console.error(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 
 async function patchCustomerById(req: Request, res: Response) {
     try {
         await updateCustomer(parseInt(req.params.id), req.body);
-        res.sendStatus(200);
+        return res.sendStatus(200);
     } catch (err) {
         if (err.name === "NotFoundError") {
             return res.status(404).send({ message: err.message });
         }
 
         console.error(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 
 async function deleteCustomerById(req: Request, res: Response) {
     try {
         await deleteCustomerFromDb(Number(req.params.id));
-        res.sendStatus(200);
+        return res.sendStatus(200);
     } catch (err) {
         if (err.name === "NotFoundError") {
             return res.status(404).send({ message: err.message });
         }
 
         console.error(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 
 async function getCustomerById(req: Request, res: Response) {
     try {
         const customer = await getCustomerByIdFromDb(Number(req.params.id));
-        res.send(customer);
+        return res.send(customer);
     } catch (err) {
         if (err.name === "NotFoundError") {
             return res.status(404).send({ message: err.message });
         }
 
         console.error(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 

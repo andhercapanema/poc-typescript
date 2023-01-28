@@ -1,3 +1,4 @@
+import { notFoundError } from "@/errors";
 import {
     DebitCreateInput,
     DebitSearchParams,
@@ -41,5 +42,9 @@ export async function getDebitsFromDb(searchParams: RequestDebitSearchParams) {
 }
 
 export async function updateDebitPaidStatus(payDebitInput: PayDebitInput) {
-    return await DebitsRepository.updatePaidToTrue(payDebitInput.id);
+    const { id } = payDebitInput;
+    const [debit] = await getDebitsFromDb({ id });
+    if (!debit) throw notFoundError("Debit With Provided Id");
+
+    return await DebitsRepository.updatePaidToTrue(id);
 }

@@ -6,7 +6,12 @@
     "scripts": {
         "build": "ttsc -p tsconfig.build.json",
         "start": "node ./dist/index.js",
-        "dev": "nodemon"
+        "dev": "nodemon",
+        "migration": "npx prisma migrate dev",
+        "prisma:seed": "npx prisma db seed"
+    },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
     },
     "repository": {
         "type": "git",

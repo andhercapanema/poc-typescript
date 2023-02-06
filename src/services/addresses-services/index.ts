@@ -1,4 +1,5 @@
 import { notFoundError, requestError } from "@/errors";
+import { badRequestError } from "@/errors/bad-request-error";
 import { AddressCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import axios from "axios";
@@ -37,6 +38,8 @@ export async function createNewAddress(
 }
 
 export async function getAddressByIdFromDb(id: number) {
+    if (isNaN(id)) throw badRequestError("Inserted address ID is not a number");
+
     const address = await AddressesRepository.selectAddressById(id);
     if (!address) throw notFoundError("Address");
 

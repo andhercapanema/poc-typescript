@@ -18,6 +18,8 @@ beforeEach(async () => {
 const server = supertest(app);
 
 describe("POST /customers", () => {
+    const invalidBody = { [faker.lorem.word()]: faker.lorem.word() };
+
     it("should respond with status 400 when body is not present", async () => {
         const response = await server.post("/customers");
 
@@ -25,7 +27,6 @@ describe("POST /customers", () => {
     });
 
     it("should respond with status 400 when body is not valid", async () => {
-        const invalidBody = { [faker.lorem.word()]: faker.lorem.word() };
         const response = await server.post("/customers").send(invalidBody);
 
         expect(response.status).toEqual(400);

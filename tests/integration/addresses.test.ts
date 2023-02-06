@@ -2,9 +2,8 @@ import app, { init } from "@/app";
 import { prisma } from "@/config";
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
-import { createCustomer } from "../factories";
+import { createAddress, createCustomer } from "../factories";
 import { cleanDb } from "../helpers";
-import { createAddress } from "../factories/addresses-factory";
 
 beforeAll(async () => {
     await init();

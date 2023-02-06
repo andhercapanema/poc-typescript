@@ -1,4 +1,5 @@
 import { notFoundError } from "@/errors";
+import { badRequestError } from "@/errors/bad-request-error";
 import { CustomerCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import CustomersRepository from "@/repositories/customers-repository";
@@ -11,6 +12,9 @@ export const getAllCustomersFromDb = async () =>
     await CustomersRepository.selectAllCustomers();
 
 export async function getCustomerByIdFromDb(customerId: number) {
+    if (isNaN(customerId))
+        throw badRequestError("Inserted customer ID is not a number");
+
     const customer = await CustomersRepository.selectCustomersById(customerId);
     if (!customer) throw notFoundError("Customer");
 

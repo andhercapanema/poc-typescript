@@ -48,6 +48,10 @@ async function patchCustomerById(req: Request, res: Response) {
             return res.status(404).send({ message: err.message });
         }
 
+        if (err.name === "BadRequestError") {
+            return res.status(400).send({ message: err.message });
+        }
+
         console.error(err);
         return res.status(500).send(err.message);
     }
@@ -62,6 +66,10 @@ async function deleteCustomerById(req: Request, res: Response) {
             return res.status(404).send({ message: err.message });
         }
 
+        if (err.name === "BadRequestError") {
+            return res.status(400).send({ message: err.message });
+        }
+
         console.error(err);
         return res.status(500).send(err.message);
     }
@@ -74,6 +82,10 @@ async function getCustomerById(req: Request, res: Response) {
     } catch (err) {
         if (err.name === "NotFoundError") {
             return res.status(404).send({ message: err.message });
+        }
+
+        if (err.name === "BadRequestError") {
+            return res.status(400).send({ message: err.message });
         }
 
         console.error(err);

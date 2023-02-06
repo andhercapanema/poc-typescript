@@ -9,12 +9,12 @@ import { validateBody } from "@/middlewares";
 import { customerSchema, customerWithAddressSchema } from "@/schemas";
 import { Router } from "express";
 
-const router = Router();
-router
+const customerRouter = Router();
+customerRouter
     .get("", getAllCustomers)
     .get("/:id", getCustomerById)
     .delete("/:id", deleteCustomerById)
     .post("", validateBody(customerWithAddressSchema), postNewCustomer)
     .patch("/:id", validateBody(customerSchema), patchCustomerById);
 
-export default router;
+export default customerRouter;

@@ -1,9 +1,10 @@
-import app, { init } from "@/app";
+import app, { close, init } from "@/app";
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { createCustomer, createDebit } from "../factories";
 import { cleanDb } from "../helpers";
 import { addHours, addMonths, format, parse, startOfDay } from "date-fns";
+import { prisma } from "@/config";
 
 beforeAll(async () => {
     await init();
@@ -11,6 +12,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
     await cleanDb();
+});
+
+afterAll(async () => {
+    await close();
 });
 
 const server = supertest(app);

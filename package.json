@@ -9,7 +9,7 @@
         "dev": "nodemon",
         "migration": "npx prisma migrate dev",
         "prisma:seed": "npx prisma db seed",
-        "test": "NODE_OPTIONS=--experimental-vm-modules npm run test:load-envs jest --passWithNoTests --runInBand -i",
+        "test": "NODE_OPTIONS=--experimental-vm-modules npm run test:load-envs jest --passWithNoTests --runInBand",
         "test:load-envs": "dotenv -e .env.test",
         "test:migration:init": "npm run test:load-envs prisma migrate dev --name marissol_crediario postgres-init"
     },

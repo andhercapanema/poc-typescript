@@ -6,3 +6,8 @@ export type AddressCreateInput = Omit<
 > & {
     zipCode: string;
 };
+
+export type DatabaseAddressCreateInput = Omit<
+    Address,
+    "id" | "created_at" | "updated_at"
+>;

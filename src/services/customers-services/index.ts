@@ -1,5 +1,4 @@
-import { notFoundError } from "@/errors";
-import { badRequestError } from "@/errors/bad-request-error";
+import { badRequestError, notFoundError } from "@/errors";
 import { CustomerCreateInput } from "@/Protocols";
 import AddressesRepository from "@/repositories/address-repository";
 import CustomersRepository from "@/repositories/customers-repository";
@@ -26,6 +25,8 @@ export async function updateCustomer(
     customerDataToUpdate: CustomerCreateInput
 ) {
     await getCustomerByIdFromDb(customerId);
+
+    customerDataToUpdate.birthDate = new Date(customerDataToUpdate.birthDate);
 
     await CustomersRepository.updateCustomerById(
         customerId,

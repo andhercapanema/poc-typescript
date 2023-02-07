@@ -16,7 +16,7 @@ async function postNewCustomer(req: Request, res: Response) {
         name,
         cpf,
         phone,
-        birthDate,
+        birthDate: new Date(birthDate),
     };
 
     try {

@@ -1,15 +1,13 @@
 import { prisma } from "@/config";
-import { CustomerCreateInput } from "@/Protocols";
-import { exclude } from "@/utils/prisma-utils";
+import { CustomerCreateInput, DatabaseCustomerCreateInput } from "@/Protocols";
+import { camelToSnakeCaseKeys, exclude } from "@/utils/prisma-utils";
 
 const CustomersRepository = {
     createCustomer: async (newCustomerData: CustomerCreateInput) => {
-        const customerWithoutBirthdate = exclude(newCustomerData, "birthDate");
         return prisma.customer.create({
-            data: {
-                ...customerWithoutBirthdate,
-                birth_date: new Date(newCustomerData.birthDate),
-            },
+            data: camelToSnakeCaseKeys(
+                newCustomerData
+            ) as DatabaseCustomerCreateInput,
         });
     },
     selectAllCustomers: async () => {
@@ -26,18 +24,13 @@ const CustomersRepository = {
         id: number,
         updateCustomerData: CustomerCreateInput
     ) => {
-        const customerWithoutBirthdate = exclude(
-            updateCustomerData,
-            "birthDate"
-        );
         return prisma.customer.update({
             where: {
                 id,
             },
-            data: {
-                ...customerWithoutBirthdate,
-                birth_date: new Date(updateCustomerData.birthDate),
-            },
+            data: camelToSnakeCaseKeys(
+                updateCustomerData
+            ) as DatabaseCustomerCreateInput,
         });
     },
     deleteCustomerById: async (id: number) => {

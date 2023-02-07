@@ -1,19 +1,17 @@
 import { prisma } from "@/config";
-import { AddressCreateInput } from "@/Protocols";
-import { exclude } from "@/utils/prisma-utils";
+import { AddressCreateInput, DatabaseAddressCreateInput } from "@/Protocols";
+import { camelToSnakeCaseKeys, exclude } from "@/utils/prisma-utils";
 
 const AddressesRepository = {
     createAddress: async (
         addressWithZipCode: AddressCreateInput,
         customerId: number
     ) => {
-        const address = exclude(addressWithZipCode, "zipCode");
         return prisma.address.create({
             data: {
-                ...address,
-                zip_code: addressWithZipCode.zipCode,
+                ...camelToSnakeCaseKeys(addressWithZipCode),
                 customer_id: customerId,
-            },
+            } as DatabaseAddressCreateInput,
         });
     },
     selectAddressById: async (id: number) => {
@@ -27,15 +25,11 @@ const AddressesRepository = {
         id: number,
         addressWithZipCode: AddressCreateInput
     ) => {
-        const address = exclude(addressWithZipCode, "zipCode");
         return prisma.address.update({
             where: {
                 id,
             },
-            data: {
-                ...address,
-                zip_code: addressWithZipCode.zipCode,
-            },
+            data: camelToSnakeCaseKeys(addressWithZipCode),
         });
     },
     deleteAddressesByCustomerId: async (customerId: number) => {

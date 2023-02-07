@@ -11,3 +11,8 @@ export type CustomerCreateInput = Omit<
 > & {
     birthDate: Date;
 };
+
+export type DatabaseCustomerCreateInput = Omit<
+    Customer,
+    "id" | "created_at" | "updated_at"
+>;
